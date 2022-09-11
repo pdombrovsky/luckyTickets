@@ -47,87 +47,34 @@ class LuckyTickets
         } while ($current < $max);
 
     }
-  
-    /**
-     * Returns the nearest lucky number from above (if argument is not lucky number)
-     * @param int $number Count of digits
-     * @throws InvalidArgumentException If number is negative or has wrong size
-     *
-    */
-    public function getTopNumber(int $number): string
+
+    private function bordersVerification(int $min, int $max): void
     {
-        $this->argumentVerification($number, 'Number');
+        $this->argumentVerification($min, 'Min');
+        $this->argumentVerification($max, 'Max');
 
-        $result = $this->getNearestAbove($number);
-
-        return $this->format($result);
+        if ($min > $max) {
+            throw new InvalidArgumentException("Max value must be greater than Min value");
+        }
     }
 
-    private function getNearestAbove(int $number): int
+    private function argumentVerification(int $argument, string $name): void
     {
-        list($left, $right) = $this->split($number);
-
-        $leftRoot = $this->digitalRoot($left);
-        $rightRoot = $this->digitalRoot($right);
-
-        if ($leftRoot == $rightRoot) {
-            return $number;
-        }
-        //When number is 000 XYZ
-        if ($leftRoot === 0) {
-            return $number + ($this->upperLimit + 1) * $rightRoot;
+        if ($argument < 0) {
+            throw new InvalidArgumentException("$name must be non negative");
         }
 
-        $rootDifference = $leftRoot - $rightRoot;
-
-        if ($rootDifference < 0) {
-            $rootDifference += 9;
+        if ($this->digitsCount($argument) > $this->size) {
+            throw new InvalidArgumentException("$name value cannot be longer than $this->size digits");
         }
-
-        $number += $rootDifference;
-
-        //If left part has no changes
-        if ($right + $rootDifference < $this->upperLimit) {
-            return $number;
-        }
-
-        return $this->getNearestAbove($number);
     }
 
     /**
-     * Calculates digital root of number
+     * Calculates number of digits
      */
-    private function digitalRoot(int $number): int
+    private function digitsCount(int $number): int
     {
-        return 1 + ($number - 1) % 9;
-    }
-
-    private function split(int $number): array
-    {
-        $divider = $this->upperLimit + 1;
-        $part2 = $number % $divider;
-        $part1 = ($number - $part2) / $divider;
-        return [$part1, $part2];
-    }
-
-    private function format(int $number): string
-    {
-        return str_pad((string)$number, $this->size, "0", STR_PAD_LEFT);
-    }
-
-    /**
-     * Returns the nearest lucky number from below (if argument is not lucky number)
-     * @param int $number Count of digits
-     * @throws InvalidArgumentException If number is negative or has wrong size
-     *
-    */
-    public function getBottomNumber(int $number): string
-    {
-        $this->argumentVerification($number, 'Number');
-
-        $result = $this->getNearestBottom($number);
-
-        return $this->format($result);
+        return (int)(log10(abs($number)) + 1);
     }
 
     private function getNearestBottom(int $number): int
@@ -168,6 +115,88 @@ class LuckyTickets
     }
 
     /**
+     * Calculates digital root of number
+     */
+    private function digitalRoot(int $number): int
+    {
+        return 1 + ($number - 1) % 9;
+    }
+
+    private function split(int $number): array
+    {
+        $divider = $this->upperLimit + 1;
+        $part2 = $number % $divider;
+        $part1 = ($number - $part2) / $divider;
+        return [$part1, $part2];
+    }
+
+    private function getNearestAbove(int $number): int
+    {
+        list($left, $right) = $this->split($number);
+
+        $leftRoot = $this->digitalRoot($left);
+        $rightRoot = $this->digitalRoot($right);
+
+        if ($leftRoot == $rightRoot) {
+            return $number;
+        }
+        //When number is 000 XYZ
+        if ($leftRoot === 0) {
+            return $number + ($this->upperLimit + 1) * $rightRoot;
+        }
+
+        $rootDifference = $leftRoot - $rightRoot;
+
+        if ($rootDifference < 0) {
+            $rootDifference += 9;
+        }
+
+        $number += $rootDifference;
+
+        //If left part has no changes
+        if ($right + $rootDifference < $this->upperLimit) {
+            return $number;
+        }
+
+        return $this->getNearestAbove($number);
+    }
+
+    private function format(int $number): string
+    {
+        return str_pad((string)$number, $this->size, "0", STR_PAD_LEFT);
+    }
+  
+    /**
+     * Returns the nearest lucky number from above (if argument is not lucky number)
+     * @param int $number Count of digits
+     * @throws InvalidArgumentException If number is negative or has wrong size
+     *
+    */
+    public function getTopNumber(int $number): string
+    {
+        $this->argumentVerification($number, 'Number');
+
+        $result = $this->getNearestAbove($number);
+
+        return $this->format($result);
+    }
+
+    /**
+     * Returns the nearest lucky number from below (if argument is not lucky number)
+     * @param int $number Count of digits
+     * @throws InvalidArgumentException If number is negative or has wrong size
+     *
+    */
+    public function getBottomNumber(int $number): string
+    {
+        $this->argumentVerification($number, 'Number');
+
+        $result = $this->getNearestBottom($number);
+
+        return $this->format($result);
+    }
+
+    /**
      * Returns count of lucky numbers in range
      *
      * @param int $min
@@ -204,32 +233,4 @@ class LuckyTickets
         return $count+ $isZeroBased;
     }
 
-    /**
-     * Calculates number of digits
-     */
-    private function digitsCount(int $number): int
-    {
-        return (int)(log10(abs($number)) + 1);
-    }
-
-    private function bordersVerification(int $min, int $max): void
-    {
-        $this->argumentVerification($min, 'Min');
-        $this->argumentVerification($max, 'Max');
-
-        if ($min > $max) {
-            throw new InvalidArgumentException("Max value must be greater than Min value");
-        }
-    }
-
-    private function argumentVerification(int $argument, string $name): void
-    {
-        if ($argument < 0) {
-            throw new InvalidArgumentException("$name must be non negative");
-        }
-
-        if ($this->digitsCount($argument) > $this->size) {
-            throw new InvalidArgumentException("$name value cannot be longer than $this->size digits");
-        }
-    }
 }

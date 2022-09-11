@@ -1,0 +1,62 @@
+<html>
+
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Lucky Tickets Counter</title>
+        <style>
+                form {
+                        font: 1em sans-serif;
+                        max-width: 320px;
+                }
+
+                p>label {
+                        display: block;
+                }
+
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                }
+
+                input {
+                        width: 50%;
+                        border: 1px solid #333;
+                        box-sizing: border-box;
+                        -moz-appearance: textfield;
+                }
+
+                input:required:valid {
+                        border-color: green;
+                }
+
+                input:invalid {
+                        box-shadow: 0 0 5px 1px red;
+                }
+
+               
+        </style>
+</head>
+
+<body>
+        <h1>Lucky Tickets Counter</h1>
+        <form target="_blank" action="script.php" method="GET">
+                <p>
+                        <label for="n1">Enter first number:</label>
+                        <input type="number" id="n1" name="first" required min="0" max="999999" step="1" pattern="\d+"
+                                placeholder="000000" inputmode="decimal">
+                </p>
+                <p>
+                        <label for="n2">Enter last number:</label>
+                        <input type="number" id="n2" name="end" required min="0" max="999999" step="1" pattern="\d+"
+                                placeholder="000000" inputmode="decimal">
+                </p>
+                <p>
+                        <button>Submit</button>
+                </p>
+        </form>
+
+</body>
+
+</html>

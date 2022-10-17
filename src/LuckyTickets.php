@@ -158,7 +158,7 @@ class LuckyTickets
         return $this->getNearestAbove($number);
     }
 
-    public function format(int $number): string
+    private function format(int $number): string
     {
         return str_pad((string)$number, $this->size, "0", STR_PAD_LEFT);
     }

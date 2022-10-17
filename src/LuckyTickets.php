@@ -37,15 +37,12 @@ class LuckyTickets
 
         $current = $min;
         do {
-
             $current = $this->getNearestAbove($current);
 
             yield $this->format($current);
 
             $current++;
-
         } while ($current < $max);
-
     }
 
     private function bordersVerification(int $min, int $max): void
@@ -161,7 +158,7 @@ class LuckyTickets
         return $this->getNearestAbove($number);
     }
 
-    private function format(int $number): string
+    public function format(int $number): string
     {
         return str_pad((string)$number, $this->size, "0", STR_PAD_LEFT);
     }
@@ -232,5 +229,4 @@ class LuckyTickets
 
         return $count+ $isZeroBased;
     }
-
 }

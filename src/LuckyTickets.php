@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 class LuckyTickets
 {
+    const MAX_ROOT = 9;
     private int $size;
     private int $upperLimit;
 
@@ -90,25 +91,9 @@ class LuckyTickets
             return 0;
         }
 
-        //When number is like XYZ 000
-        if ($rightRoot === 0) {
-            return $this->getNearestBottom($number - 1);
-        }
+        $difference = ($leftRoot > $rightRoot) ? $leftRoot - static::MAX_ROOT + $rightRoot : $leftRoot - $rightRoot;
 
-        $rootDifference = $leftRoot - $rightRoot;
-
-        if ($rootDifference > 0) {
-            $rootDifference -= 9;
-        }
-
-        $number += $rootDifference;
-
-        if ($right + $rootDifference > 0) {
-            return $number;
-        }
-
-        $number--;
-        return $this->getNearestBottom($number);
+        return $this->getNearestBottom($number + $difference);
     }
 
     /**
@@ -116,7 +101,7 @@ class LuckyTickets
      */
     private function digitalRoot(int $number): int
     {
-        return 1 + ($number - 1) % 9;
+        return 1 + ($number - 1) % static::MAX_ROOT;
     }
 
     private function split(int $number): array
@@ -137,25 +122,15 @@ class LuckyTickets
         if ($leftRoot == $rightRoot) {
             return $number;
         }
+
         //When number is 000 XYZ
         if ($leftRoot === 0) {
             return $number + ($this->upperLimit + 1) * $rightRoot;
         }
+        
+        $difference = ($leftRoot < $rightRoot) ? static::MAX_ROOT - $rightRoot + $leftRoot : $leftRoot - $rightRoot;
 
-        $rootDifference = $leftRoot - $rightRoot;
-
-        if ($rootDifference < 0) {
-            $rootDifference += 9;
-        }
-
-        $number += $rootDifference;
-
-        //If left part has no changes
-        if ($right + $rootDifference < $this->upperLimit) {
-            return $number;
-        }
-
-        return $this->getNearestAbove($number);
+        return $this->getNearestAbove($number + $difference);
     }
 
     private function format(int $number): string
@@ -223,9 +198,9 @@ class LuckyTickets
         list($leftLower, $rightLower) = $this->split($lower);
         list($leftUpper, $rightUpper) = $this->split($upper);
        
-        $count = ($leftUpper - $leftLower - 1) *  $this->upperLimit / 9;
-        $count += ($this->upperLimit - $rightLower + $this->digitalRoot($rightLower)) / 9;
-        $count += ($rightUpper - $this->digitalRoot($rightUpper)) / 9 + 1;
+        $count = ($leftUpper - $leftLower - 1) *  $this->upperLimit / static::MAX_ROOT;
+        $count += ($this->upperLimit - $rightLower + $this->digitalRoot($rightLower)) / static::MAX_ROOT;
+        $count += ($rightUpper - $this->digitalRoot($rightUpper)) / static::MAX_ROOT + 1;
 
         return (int)$count + $isZeroBased;
     }

@@ -165,7 +165,7 @@ class LuckyTickets
   
     /**
      * Returns the nearest lucky number from above (if argument is not lucky number)
-     * @param int $number Count of digits
+     * @param int $number
      * @throws InvalidArgumentException If number is negative or has wrong size
      *
     */
@@ -180,7 +180,7 @@ class LuckyTickets
 
     /**
      * Returns the nearest lucky number from below (if argument is not lucky number)
-     * @param int $number Count of digits
+     * @param int $number
      * @throws InvalidArgumentException If number is negative or has wrong size
      *
     */
@@ -227,6 +227,6 @@ class LuckyTickets
         $count += ($this->upperLimit - $rightLower + $this->digitalRoot($rightLower)) / 9;
         $count += ($rightUpper - $this->digitalRoot($rightUpper)) / 9 + 1;
 
-        return $count+ $isZeroBased;
+        return (int)$count + $isZeroBased;
     }
 }

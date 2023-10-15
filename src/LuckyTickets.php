@@ -91,9 +91,9 @@ class LuckyTickets
             return 0;
         }
 
-        $difference = ($leftRoot > $rightRoot) ? $leftRoot - static::MAX_ROOT + $rightRoot : $leftRoot - $rightRoot;
-
-        return $this->getNearestBottom($number + $difference);
+        return $number +
+            $leftRoot - $rightRoot +
+            ($leftRoot > $rightRoot ? -static::MAX_ROOT - ($right < static::MAX_ROOT ? 2 : 0) : 0);
     }
 
     /**
@@ -122,15 +122,15 @@ class LuckyTickets
         if ($leftRoot == $rightRoot) {
             return $number;
         }
-
+        
         //When number is 000 XYZ
         if ($leftRoot === 0) {
             return $number + ($this->upperLimit + 1) * $rightRoot;
         }
-        
-        $difference = ($leftRoot < $rightRoot) ? static::MAX_ROOT - $rightRoot + $leftRoot : $leftRoot - $rightRoot;
 
-        return $this->getNearestAbove($number + $difference);
+        return $number +
+            $leftRoot - $rightRoot +
+            ($leftRoot < $rightRoot ? static::MAX_ROOT + ($this->upperLimit - $right < static::MAX_ROOT ? 2 : 0) : 0);
     }
 
     private function format(int $number): string

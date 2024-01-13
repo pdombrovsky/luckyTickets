@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+namespace Ticket;
+
+use InvalidArgumentException;
+
 class LuckyTickets
 {
     const MAX_ROOT = 9;
